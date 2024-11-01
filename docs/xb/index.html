@@ -220,10 +220,7 @@
 
                     xbLastDate = dateStr;
 
-                    let url = "http://120.27.218.210:6098/kv?base=xbhz" + dateStr;
-                    if (window.location.protocol == 'https:') {
-                        url = "https://xb.qiihao.com:8443/kv?base=xbhz" + dateStr;
-                    }
+                    let url = "https://xb.qiihao.com:8443/kv?base=xbhz" + dateStr;
 
                     fetch(url)
                         .then(res => res.json())
