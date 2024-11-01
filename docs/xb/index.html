@@ -165,11 +165,11 @@
                     const httpURL = location.href.replace('https:', 'http:');
 
                     // 提示用户点击链接跳到新页面
-                    const link = document.createElement('div');
-                    link.innerHTML = '<span style="color: red;">!! 当前为HTTPS页面,可能无法获取数据,请转到HTTP页面: '
-                        + httpURL + '<br/>!! 不要使用浏览器的粘贴并跳转功能,而是直接复制链接到地址栏,并按回车键';
-                    link.style.margin = "10px";
-                    document.body.insertBefore(link, document.body.firstChild);
+                    // const link = document.createElement('div');
+                    // link.innerHTML = '<span style="color: red;">!! 当前为HTTPS页面,可能无法获取数据,请转到HTTP页面: '
+                    //     + httpURL + '<br/>!! 不要使用浏览器的粘贴并跳转功能,而是直接复制链接到地址栏,并按回车键';
+                    // link.style.margin = "10px";
+                    // document.body.insertBefore(link, document.body.firstChild);
                 }
 
                 const table = document.getElementById("myTable");
