@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>送道具</title>
+    <style>
+        .highlight {
+            background-color: #FFFF99;
+        }
+
+        /* 设置数字序号的列表 */
+        ul {
+            padding-left: 20px;
+            /* 给ul左边一些空间 */
+            list-style-type: decimal;
+            /* 列表项使用数字序号 */
+        }
+
+        li {
+            cursor: pointer;
+            padding: 5px;
+            margin: 2px 0;
+        }
+
+        li:hover {
+            background-color: #f0f0f0;
+        }
+        /* 提示框的基础样式 */
+        #toast {
+            visibility: hidden;
+            /* 默认隐藏 */
+            min-width: 250px;
+            margin: 0 auto;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 8px;
+            padding: 16px;
+            position: fixed;
+            left: 50%;
+            bottom: 30px;
+            transform: translateX(-50%);
+            font-size: 17px;
+            z-index: 9999;
+            opacity: 0;
+            /* 初始透明度为 0 */
+            transition: opacity 0.5s ease-in-out;
+            /* 淡入淡出效果 */
+        }
+
+        /* 显示时的样式 */
+        #toast.show {
+            visibility: visible;
+            opacity: 1;
+            /* 完全不透明 */
+        }
+
+        /* 隐藏时的样式 */
+        #toast.hide {
+            opacity: 0;
+            /* 透明 */
+        }
+    </style>
+</head>
+
+<body style="justify-items: center;">
+    <!-- 提示框 -->
+    <div id="toast">
+        <script>
+            let toastTimeout; // 保存当前的定时器
+
+            /**
+             * 弹出一个定时消失的提示框
+             * @param {string} message - 要显示的提示信息
+             * @param {number} duration - 提示框显示的时间（毫秒），默认3000ms
+             */
+            function showToast(message, duration = 3000) {
+                const toast = document.getElementById("toast");
+                toast.textContent = message;
+
+                // 清除之前的定时器，避免多个提示叠加影响
+                if (toastTimeout) {
+                    clearTimeout(toastTimeout);
+                }
+
+                // 显示提示框
+                toast.classList.add("show");
+                toast.classList.remove("hide");
+
+                // 在指定时间后开始淡出提示框
+                toastTimeout = setTimeout(() => {
+                    toast.classList.add("hide"); // 触发淡出效果
+                    // 等待 CSS 过渡结束后隐藏提示框
+                    setTimeout(() => {
+                        toast.classList.remove("show");
+                    }, 500); // 等待500ms过渡完成
+                }, duration);
+            }
+        </script>
+    </div>
+    <div>
+        <div style="margin-bottom: 20px;">
+            <a href="../">修仙之路</a> <span style="font-size: 14px;"> &gt; </span><span>送道具</span>
+        </div>
+
+        <div>
+            <p>将yuki估价的结果粘贴到下面的框内:</p>
+            <textarea id="txt" style="width: 70vw; height: 20vh;"></textarea>
+        </div>
+        <div>
+            <span>接收人的UID:</span>
+            <input id="uid" type="text" />
+        </div>
+        <div>
+            <p>点击对应指令可以直接复制:</p>
+            <div>
+                <ul id="list" style="width: 100%;">
+                    <li>送道具 灵丹10K券 1 1541461542</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function copyStr(str) {
+            if (str === '') {
+                return;
+            }
+
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                // 使用 Clipboard API
+                navigator.clipboard.writeText(str).then(() => {
+                    showToast(`已复制到剪贴板`);
+                }).catch(err => {
+                    alert('复制失败，请手动复制：' + str);
+                });
+            } else {
+                // 回退到 execCommand 方法
+                const textarea = document.createElement('textarea');
+                textarea.value = copyStr;
+                document.body.appendChild(textarea);
+                textarea.select();
+                try {
+                    const success = document.execCommand('copy');
+                    if (success) {
+                        showToast(`已复制到剪贴板`);
+                    } else {
+                        alert('复制失败，请手动复制：' + str);
+                    }
+                } catch (err) {
+                    alert('浏览器不支持复制操作，请手动复制：' + str);
+                }
+                document.body.removeChild(textarea);
+            }
+        }
+
+        function parseText(txt, uid) {
+            let kjs = {};
+            let m = txt.matchAll(/(宗石|5W|打坐|洞府|10W|100W|10K|周|专注|月|200W|年|季|双修|探宝|抽卡|十连|催熟|妖兽|心法|金丹})[^\d]*?(\d+)/g);
+            if (m) {
+                const t = {
+                    "宗石": "宗石券",
+                    "5W": "灵丹5W券",
+                    "打坐": "打坐券",
+                    "洞府": "洞府券",
+                    "10W": "灵丹10W券",
+                    "100W": "灵丹100W券",
+                    "10K": "灵丹10K券",
+                    "周": "周会员券",
+                    "专注": "专注券",
+                    "月": "月会员券",
+                    "200W": "灵丹200W券",
+                    "年": "年会员券",
+                    "季": "季会员券",
+                    "双修": "双修丹",
+                    "探宝": "探宝令",
+                    "抽卡": "抽卡券",
+                    "十连": "十连",
+                    "催熟": "催熟符",
+                    "妖兽": "妖兽令",
+                    "心法": "心法令",
+                    "金丹": "金丹券"
+                };
+
+                for (let item of m) {
+                    kjs[t[item[1]]] = parseInt(item[2]);
+                }
+            }
+
+            let result = [];
+            Object.keys(kjs).forEach(key => {
+                result.push(`送道具 ${key} ${kjs[key]} ${uid}`);
+            });
+
+            if (result.length === 0) {
+                return ['送道具 灵丹10K券 1 1541461542'];
+            }
+            return result;
+        }
+
+        // 处理文本输入变化的函数
+        function handleInputChange() {
+            const txt = document.getElementById('txt').value;
+            const uid = document.getElementById('uid').value;
+
+            if (!txt) return; // 如果txt或uid为空，不做任何操作
+
+            const parsedCommands = parseText(txt, uid ?? '');
+            const list = document.getElementById('list');
+            list.innerHTML = '';  // 清空原有列表
+
+            parsedCommands.forEach(command => {
+                const li = document.createElement('li');
+                li.textContent = command;
+
+                // 绑定点击事件，复制命令
+                li.addEventListener('click', () => {
+                    copyStr(command);
+                });
+
+                // 点击高亮显示
+                li.addEventListener('click', () => {
+                    const allItems = list.querySelectorAll('li');
+                    allItems.forEach(item => item.classList.remove('highlight'));
+                    li.classList.add('highlight');
+                });
+
+                list.appendChild(li);
+            });
+        }
+
+        // 监听 txt 和 uid 输入框的变化
+        document.getElementById('txt').addEventListener('input', handleInputChange);
+        document.getElementById('uid').addEventListener('input', handleInputChange);
+    </script>
+</body>
+
+</html>

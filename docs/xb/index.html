@@ -98,13 +98,13 @@
             /* 透明 */
         }
     </style>
-	<script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
-	<script>LA.init({id:"3KAKRGsCk98URsAf",ck:"3KAKRGsCk98URsAf"})</script>
+    <script charset="UTF-8" id="LA_COLLECT" src="https://sdk.51.la/js-sdk-pro.min.js"></script>
+    <script>LA.init({ id: "3KAKRGsCk98URsAf", ck: "3KAKRGsCk98URsAf" })</script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <!-- 引入html2canvas库 -->
 </head>
 
-<body>
+<body style="justify-items: center; width: 100%;">
     <!-- 提示框 -->
     <div id="toast">
         <script>
@@ -139,197 +139,204 @@
             }
         </script>
     </div>
-    <div id="tableContainer" style="background-color: white; padding: 5px; display: inline-block; margin-left: -5px;">
-        <table id="myTable" style="width: 450px; height: 600px;">
-            <colgroup>
-                <col style="width: 20%;">
-                <col style="width: 15%;">
-                <col style="width: 20%;">
-                <col style="width: 15%;">
-                <col style="width: 15%;">
-                <col style="width: 15%;">
-            </colgroup>
-
-            <tr>
-                <th colspan="6">地狱寻宝</th>
-            </tr>
-            <tr>
-                <td>战力</td>
-                <td>BOSS</td>
-                <td>关卡</td>
-                <td colspan="3">位置</td>
-            </tr>
-            <!-- 生成剩余的18行 -->
-            <script>
-                if (location.protocol === 'https:') {
-                    const httpURL = location.href.replace('https:', 'http:');
-
-                    // 提示用户点击链接跳到新页面
-                    // const link = document.createElement('div');
-                    // link.innerHTML = '<span style="color: red;">!! 当前为HTTPS页面,可能无法获取数据,请转到HTTP页面: '
-                    //     + httpURL + '<br/>!! 不要使用浏览器的粘贴并跳转功能,而是直接复制链接到地址栏,并按回车键';
-                    // link.style.margin = "10px";
-                    // document.body.insertBefore(link, document.body.firstChild);
-                }
-
-                const table = document.getElementById("myTable");
-
-                for (let i = 3; i <= 20; i++) {
-                    const row = table.insertRow();
-                    for (let j = 0; j < 6; j++) {
-                        const cell = row.insertCell();
-                        if (j == 0) {
-                            cell.classList.add('right-align');
-                        }
-                        else if (j == 1 || j == 3 || j == 4 || j == 5) {
-                            cell.classList.add('bold');
-                            cell.classList.add('handcursor');
-                            if (j == 1) {
-                                cell.title = '点击复制指令(攻击BOSS)';
-                            }
-                            else {
-                                cell.title = '点击复制指令(不攻击BOSS)';
-                            }
-                        }
-                    }
-                }
-
-                [
-                    '1993', '3.1万', '19.1万', '66.7万', '172.7万', '372.7万', '715.0万', '1256.4万', '2056.8万',
-                    '3187.3万', '4738.3万', '6804.6万', '9512.0万', '1.27亿', '1.69亿', '2.20亿', '2.83亿', '3.63亿'
-                ].forEach((item, i) => {
-                    table.rows[i + 2].cells[0].textContent = item;
-                });
-
-                for (let i = 2; i < 20; i++) {
-                    const row = table.rows[i].cells[2].textContent = `第${i - 1}层`;
-                }
-
-                var xbData = {};
-                var xbLastDate = '';
-
-                function updateXbData() {
-                    const date = new Date();
-                    let dateStr = date.getFullYear() +
-                        ('0' + (date.getMonth() + 1)).slice(-2) +
-                        ('0' + (date.getDate())).slice(-2);
-
-                    if (xbLastDate != '' && dateStr == xbLastDate) {
-                        return;
-                    }
-
-                    xbLastDate = dateStr;
-
-                    let url = "https://xb.qiihao.com:8443/kv?base=xbhz" + dateStr;
-
-                    fetch(url)
-                        .then(res => res.json())
-                        .then(data => {
-                            if (data.code != 0) {
-                                xbLastDate = '';
-                                return;
-                            }
-
-                            xbData = data.data;
-                            table.rows[0].cells[0].textContent = dateStr.substr(4) + " 地狱寻宝";
-                            Object.keys(data.data).forEach(key => {
-                                let r = parseInt(key) + 1;
-                                table.rows[r].cells[1].textContent = data.data[key].boss;
-                                table.rows[r].cells[3].textContent = data.data[key].bz[0];
-                                table.rows[r].cells[4].textContent = data.data[key].bz[1];
-                                table.rows[r].cells[5].textContent = data.data[key].bz[2];
-                            });
-                        }).catch(err => {
-                            xbLastDate = '';
-                        });
-                }
-
-                updateXbData();
-                setInterval(updateXbData, 300000);
-
-                // 添加点击事件处理逻辑
-                let highlightedRow = null;
-
-                table.addEventListener("click", function (event) {
-                    const row = event.target.parentNode;
-                    const cell = event.target.closest('td, th');
-                    const rowIndex = row.rowIndex;
-                    const cellIndex = cell.cellIndex;
-
-                    if (rowIndex >= 2 && rowIndex <= 20) {
-                        if (highlightedRow) {
-                            highlightedRow.classList.remove("highlight");
-                        }
-                        row.classList.add("highlight");
-                        highlightedRow = row;
-
-                        let copyStr = '';
-                        if (cellIndex < 2) {
-                            let key = (rowIndex - 1).toString();
-                            copyStr = '地狱寻宝 ' + xbData[key].boss;
-                            copyStr += ' ' + xbData[key].bz[0];
-                            copyStr += ' ' + xbData[key].bz[1];
-                        }
-                        else if (cellIndex >= 2) {
-                            let key = (rowIndex - 1).toString();
-                            copyStr = '地狱寻宝 ' + xbData[key].bz[0];
-                            copyStr += ' ' + xbData[key].bz[1];
-                            copyStr += ' ' + xbData[key].bz[2];
-                        }
-
-                        // 将文本复制到剪贴板
-                        if (copyStr !== '') {
-                            if (navigator.clipboard && navigator.clipboard.writeText) {
-                                // 使用 Clipboard API
-                                navigator.clipboard.writeText(copyStr).then(() => {
-                                    showToast(`第${rowIndex - 1}层指令${cellIndex < 2 ? '(含BOSS)' : ''}已复制到剪贴板`);
-                                }).catch(err => {
-                                    alert('复制失败，请手动复制：' + copyStr);
-                                });
-                            } else {
-                                // 回退到 execCommand 方法
-                                const textarea = document.createElement('textarea');
-                                textarea.value = copyStr;
-                                document.body.appendChild(textarea);
-                                textarea.select();
-                                try {
-                                    const success = document.execCommand('copy');
-                                    if (success) {
-                                        showToast(`第${rowIndex - 1}层指令${cellIndex < 2 ? '(含BOSS)' : ''}已复制到剪贴板`);
-                                    } else {
-                                        alert('复制失败，请手动复制：' + copyStr);
-                                    }
-                                } catch (err) {
-                                    alert('浏览器不支持复制操作，请手动复制：' + copyStr);
-                                }
-                                document.body.removeChild(textarea);
-                            }
-                        }
-
-                    } else if (rowIndex < 2) {
-                        if (highlightedRow) {
-                            highlightedRow.classList.remove("highlight");
-                            highlightedRow = null;
-                        }
-                    }
-                });
-            </script>
-        </table>
-        <div><span>制作人: yuki</span>&nbsp;&nbsp;&nbsp;&nbsp;<span>实时更新: http://qiihao.com/xb</span></div>
-    </div>
-    <div style="color: red; padding-top: 5px;">* 点击上面各行可以复制对应寻宝指令</div>
-    <div style="color: red; padding-top: 5px;">* 点击BOSS列可以复制攻击BOSS的指令</div>
-    <div style="color: red; padding-top: 5px;">* 每日00:07左右更新寻宝路线, 届时此页面会自动展示新路线</div>
-
-    <button id="downloadBtn" style="margin-top: 5px;">保存图片</button>
-    <button id="shareBtn" style="margin-top: 5px;">分享网址</button>
-    <div style="margin-top: 5px;">
-        广告:
-        <div>
-            宗门收人, 进群: 35858049, 进群暗号: 极度放纵
+    <div>
+        <div style="margin-bottom: 20px;">
+            <a href="../xxzl">修仙之路</a> <span style="font-size: 14px;"> &gt; </span><span>地狱寻宝</span>
         </div>
-        <div>
-            26出零食, 加Q: 171286005
+
+        <div id="tableContainer"
+            style="background-color: white; padding: 5px; display: inline-block; margin-left: -5px;">
+            <table id="myTable" style="width: 450px; height: 600px;">
+                <colgroup>
+                    <col style="width: 20%;">
+                    <col style="width: 15%;">
+                    <col style="width: 20%;">
+                    <col style="width: 15%;">
+                    <col style="width: 15%;">
+                    <col style="width: 15%;">
+                </colgroup>
+
+                <tr>
+                    <th colspan="6">地狱寻宝</th>
+                </tr>
+                <tr>
+                    <td>战力</td>
+                    <td>BOSS</td>
+                    <td>关卡</td>
+                    <td colspan="3">位置</td>
+                </tr>
+                <!-- 生成剩余的18行 -->
+                <script>
+                    if (location.protocol === 'https:') {
+                        const httpURL = location.href.replace('https:', 'http:');
+
+                        // 提示用户点击链接跳到新页面
+                        // const link = document.createElement('div');
+                        // link.innerHTML = '<span style="color: red;">!! 当前为HTTPS页面,可能无法获取数据,请转到HTTP页面: '
+                        //     + httpURL + '<br/>!! 不要使用浏览器的粘贴并跳转功能,而是直接复制链接到地址栏,并按回车键';
+                        // link.style.margin = "10px";
+                        // document.body.insertBefore(link, document.body.firstChild);
+                    }
+
+                    const table = document.getElementById("myTable");
+
+                    for (let i = 3; i <= 20; i++) {
+                        const row = table.insertRow();
+                        for (let j = 0; j < 6; j++) {
+                            const cell = row.insertCell();
+                            if (j == 0) {
+                                cell.classList.add('right-align');
+                            }
+                            else if (j == 1 || j == 3 || j == 4 || j == 5) {
+                                cell.classList.add('bold');
+                                cell.classList.add('handcursor');
+                                if (j == 1) {
+                                    cell.title = '点击复制指令(攻击BOSS)';
+                                }
+                                else {
+                                    cell.title = '点击复制指令(不攻击BOSS)';
+                                }
+                            }
+                        }
+                    }
+
+                    [
+                        '1993', '3.1万', '19.1万', '66.7万', '172.7万', '372.7万', '715.0万', '1256.4万', '2056.8万',
+                        '3187.3万', '4738.3万', '6804.6万', '9512.0万', '1.27亿', '1.69亿', '2.20亿', '2.83亿', '3.63亿'
+                    ].forEach((item, i) => {
+                        table.rows[i + 2].cells[0].textContent = item;
+                    });
+
+                    for (let i = 2; i < 20; i++) {
+                        const row = table.rows[i].cells[2].textContent = `第${i - 1}层`;
+                    }
+
+                    var xbData = {};
+                    var xbLastDate = '';
+
+                    function updateXbData() {
+                        const date = new Date();
+                        let dateStr = date.getFullYear() +
+                            ('0' + (date.getMonth() + 1)).slice(-2) +
+                            ('0' + (date.getDate())).slice(-2);
+
+                        if (xbLastDate != '' && dateStr == xbLastDate) {
+                            return;
+                        }
+
+                        xbLastDate = dateStr;
+
+                        let url = "https://xb.qiihao.com:8443/kv?base=xbhz" + dateStr;
+
+                        fetch(url)
+                            .then(res => res.json())
+                            .then(data => {
+                                if (data.code != 0) {
+                                    xbLastDate = '';
+                                    return;
+                                }
+
+                                xbData = data.data;
+                                table.rows[0].cells[0].textContent = dateStr.substr(4) + " 地狱寻宝";
+                                Object.keys(data.data).forEach(key => {
+                                    let r = parseInt(key) + 1;
+                                    table.rows[r].cells[1].textContent = data.data[key].boss;
+                                    table.rows[r].cells[3].textContent = data.data[key].bz[0];
+                                    table.rows[r].cells[4].textContent = data.data[key].bz[1];
+                                    table.rows[r].cells[5].textContent = data.data[key].bz[2];
+                                });
+                            }).catch(err => {
+                                xbLastDate = '';
+                            });
+                    }
+
+                    updateXbData();
+                    setInterval(updateXbData, 300000);
+
+                    // 添加点击事件处理逻辑
+                    let highlightedRow = null;
+
+                    table.addEventListener("click", function (event) {
+                        const row = event.target.parentNode;
+                        const cell = event.target.closest('td, th');
+                        const rowIndex = row.rowIndex;
+                        const cellIndex = cell.cellIndex;
+
+                        if (rowIndex >= 2 && rowIndex <= 20) {
+                            if (highlightedRow) {
+                                highlightedRow.classList.remove("highlight");
+                            }
+                            row.classList.add("highlight");
+                            highlightedRow = row;
+
+                            let copyStr = '';
+                            if (cellIndex < 2) {
+                                let key = (rowIndex - 1).toString();
+                                copyStr = '地狱寻宝 ' + xbData[key].boss;
+                                copyStr += ' ' + xbData[key].bz[0];
+                                copyStr += ' ' + xbData[key].bz[1];
+                            }
+                            else if (cellIndex >= 2) {
+                                let key = (rowIndex - 1).toString();
+                                copyStr = '地狱寻宝 ' + xbData[key].bz[0];
+                                copyStr += ' ' + xbData[key].bz[1];
+                                copyStr += ' ' + xbData[key].bz[2];
+                            }
+
+                            // 将文本复制到剪贴板
+                            if (copyStr !== '') {
+                                if (navigator.clipboard && navigator.clipboard.writeText) {
+                                    // 使用 Clipboard API
+                                    navigator.clipboard.writeText(copyStr).then(() => {
+                                        showToast(`第${rowIndex - 1}层指令${cellIndex < 2 ? '(含BOSS)' : ''}已复制到剪贴板`);
+                                    }).catch(err => {
+                                        alert('复制失败，请手动复制：' + copyStr);
+                                    });
+                                } else {
+                                    // 回退到 execCommand 方法
+                                    const textarea = document.createElement('textarea');
+                                    textarea.value = copyStr;
+                                    document.body.appendChild(textarea);
+                                    textarea.select();
+                                    try {
+                                        const success = document.execCommand('copy');
+                                        if (success) {
+                                            showToast(`第${rowIndex - 1}层指令${cellIndex < 2 ? '(含BOSS)' : ''}已复制到剪贴板`);
+                                        } else {
+                                            alert('复制失败，请手动复制：' + copyStr);
+                                        }
+                                    } catch (err) {
+                                        alert('浏览器不支持复制操作，请手动复制：' + copyStr);
+                                    }
+                                    document.body.removeChild(textarea);
+                                }
+                            }
+
+                        } else if (rowIndex < 2) {
+                            if (highlightedRow) {
+                                highlightedRow.classList.remove("highlight");
+                                highlightedRow = null;
+                            }
+                        }
+                    });
+                </script>
+            </table>
+            <div><span>制作人: yuki</span>&nbsp;&nbsp;&nbsp;&nbsp;<span>实时更新: http://qiihao.com/xb</span></div>
+        </div>
+        <div style="color: red; padding-top: 5px;">* 点击上面各行可以复制对应寻宝指令</div>
+        <div style="color: red; padding-top: 5px;">* 点击BOSS列可以复制攻击BOSS的指令</div>
+        <div style="color: red; padding-top: 5px;">* 每日00:07左右更新寻宝路线, 届时此页面会自动展示新路线</div>
+
+        <button id="downloadBtn" style="margin-top: 5px;">保存图片</button>
+        <button id="shareBtn" style="margin-top: 5px;">分享网址</button>
+        <div style="margin-top: 5px;">
+            广告:
+            <div>
+                宗门收人, 进群: 35858049, 进群暗号: 极度放纵
+            </div>
+            <div>
+                1:26.5出零食, 加Q: 171286005
+            </div>
         </div>
     </div>
     <script>
