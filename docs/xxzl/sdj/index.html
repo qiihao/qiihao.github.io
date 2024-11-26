@@ -139,7 +139,7 @@
             } else {
                 // 回退到 execCommand 方法
                 const textarea = document.createElement('textarea');
-                textarea.value = copyStr;
+                textarea.value = str;
                 document.body.appendChild(textarea);
                 textarea.select();
                 try {
