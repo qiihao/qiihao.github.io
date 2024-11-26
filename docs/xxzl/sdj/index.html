@@ -128,6 +128,15 @@
     </div>
 
     <script>
+        const txtElement = document.getElementById('txt');
+        const uidElement = document.getElementById('uid');
+
+        // 保存到 localStorage 的键名
+        const LOCAL_STORAGE_KEYS = {
+            TXT: 'storedTxt',
+            UID: 'storedUid'
+        };
+
         function copyStr(str) {
             if (str === '') {
                 return;
@@ -204,14 +213,7 @@
             return result;
         }
 
-        // 处理文本输入变化的函数
-        function handleInputChange() {
-            const txt = document.getElementById('txt').value;
-            const uid = document.getElementById('uid').value;
-
-            if (!txt) return; // 如果txt或uid为空，不做任何操作
-
-            const parsedCommands = parseText(txt, uid ?? '');
+        function renderList(parsedCommands) {
             const list = document.getElementById('list');
             list.innerHTML = '';  // 清空原有列表
 
@@ -235,9 +237,41 @@
             });
         }
 
+        // 处理文本输入变化的函数
+        function handleInputChange() {
+            const txt = document.getElementById('txt').value;
+            const uid = document.getElementById('uid').value;
+
+            // 保存到 localStorage
+            localStorage.setItem(LOCAL_STORAGE_KEYS.TXT, txt);
+            localStorage.setItem(LOCAL_STORAGE_KEYS.UID, uid);
+
+            if (!txt) return; // 如果txt或uid为空，不做任何操作
+
+            const parsedCommands = parseText(txt, uid ?? '');
+            renderList(parsedCommands);
+        }
+
+        // 初始化: 加载 localStorage 中的内容
+        function initialize() {
+            const storedTxt = localStorage.getItem(LOCAL_STORAGE_KEYS.TXT) || '';
+            const storedUid = localStorage.getItem(LOCAL_STORAGE_KEYS.UID) || '';
+
+            // 设置到输入框
+            txtElement.value = storedTxt;
+            uidElement.value = storedUid;
+
+            // 渲染列表
+            const commands = parseText(storedTxt, storedUid);
+            renderList(commands);
+        }
+
         // 监听 txt 和 uid 输入框的变化
         document.getElementById('txt').addEventListener('input', handleInputChange);
         document.getElementById('uid').addEventListener('input', handleInputChange);
+
+        // 页面加载时初始化
+        window.addEventListener('DOMContentLoaded', initialize);
     </script>
 </body>
 
