@@ -285,30 +285,35 @@
 
                             // 将文本复制到剪贴板
                             if (copyStr !== '') {
+                                let copySuccess = false;
                                 if (navigator.clipboard && navigator.clipboard.writeText) {
                                     // 使用 Clipboard API
                                     navigator.clipboard.writeText(copyStr).then(() => {
-                                        showToast(`第${rowIndex - 1}层指令${cellIndex < 2 ? '(含BOSS)' : ''}已复制到剪贴板`);
+                                        copySuccess = true;
                                     }).catch(err => {
-                                        alert('复制失败，请手动复制：' + copyStr);
+                                        console.log(err);
                                     });
-                                } else {
+                                } 
+                                
+                                if (!copySuccess) {
                                     // 回退到 execCommand 方法
                                     const textarea = document.createElement('textarea');
                                     textarea.value = copyStr;
                                     document.body.appendChild(textarea);
                                     textarea.select();
                                     try {
-                                        const success = document.execCommand('copy');
-                                        if (success) {
-                                            showToast(`第${rowIndex - 1}层指令${cellIndex < 2 ? '(含BOSS)' : ''}已复制到剪贴板`);
-                                        } else {
-                                            alert('复制失败，请手动复制：' + copyStr);
-                                        }
+                                        copySuccess = document.execCommand('copy');
                                     } catch (err) {
-                                        alert('浏览器不支持复制操作，请手动复制：' + copyStr);
+                                        console.log(err);
                                     }
                                     document.body.removeChild(textarea);
+                                }
+
+                                if (copySuccess) {
+                                    showToast(`第${rowIndex - 1}层指令${cellIndex < 2 ? '(含BOSS)' : ''}已复制到剪贴板`);
+                                }
+                                else {
+                                    alert('浏览器不支持复制操作, 你可以尝试更换浏览器, 或者将地址中的https改为http');
                                 }
                             }
 
