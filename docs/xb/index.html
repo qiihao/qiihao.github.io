@@ -203,7 +203,7 @@
                     [
                         '1993', '3.1万', '19.1万', '66.7万', '172.7万', '372.7万', '715.0万', '1256.4万', '2056.8万',
                         '3187.3万', '4738.3万', '6804.6万', '9512.0万', '1.27亿', '1.69亿', '2.20亿', '2.83亿', '3.63亿',
-                        '未知', '未知'
+                        '4.62亿', '5.70亿'
                     ].forEach((item, i) => {
                         table.rows[i + 2].cells[0].textContent = item;
                     });
@@ -224,7 +224,7 @@
                         if (xbLastDate != '' && dateStr == xbLastDate) {
                             return;
                         }
-                        
+
                         xbLastDate = dateStr;
 
                         let url = "https://xb.qiihao.com:8443/kv?base=xbhz" + dateStr;
