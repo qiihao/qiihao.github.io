@@ -165,7 +165,7 @@
                     <td>关卡</td>
                     <td colspan="3">位置</td>
                 </tr>
-                <!-- 生成剩余的18行 -->
+                <!-- 生成剩余的20行 -->
                 <script>
                     if (location.protocol === 'https:') {
                         const httpURL = location.href.replace('https:', 'http:');
@@ -180,7 +180,7 @@
 
                     const table = document.getElementById("myTable");
 
-                    for (let i = 3; i <= 20; i++) {
+                    for (let i = 3; i <= 22; i++) {
                         const row = table.insertRow();
                         for (let j = 0; j < 6; j++) {
                             const cell = row.insertCell();
@@ -202,12 +202,13 @@
 
                     [
                         '1993', '3.1万', '19.1万', '66.7万', '172.7万', '372.7万', '715.0万', '1256.4万', '2056.8万',
-                        '3187.3万', '4738.3万', '6804.6万', '9512.0万', '1.27亿', '1.69亿', '2.20亿', '2.83亿', '3.63亿'
+                        '3187.3万', '4738.3万', '6804.6万', '9512.0万', '1.27亿', '1.69亿', '2.20亿', '2.83亿', '3.63亿',
+                        '未知', '未知'
                     ].forEach((item, i) => {
                         table.rows[i + 2].cells[0].textContent = item;
                     });
 
-                    for (let i = 2; i < 20; i++) {
+                    for (let i = 2; i < 22; i++) {
                         const row = table.rows[i].cells[2].textContent = `第${i - 1}层`;
                     }
 
@@ -223,7 +224,7 @@
                         if (xbLastDate != '' && dateStr == xbLastDate) {
                             return;
                         }
-
+                        
                         xbLastDate = dateStr;
 
                         let url = "https://xb.qiihao.com:8443/kv?base=xbhz" + dateStr;
@@ -262,7 +263,7 @@
                         const rowIndex = row.rowIndex;
                         const cellIndex = cell.cellIndex;
 
-                        if (rowIndex >= 2 && rowIndex <= 20) {
+                        if (rowIndex >= 2 && rowIndex <= 22) {
                             if (highlightedRow) {
                                 highlightedRow.classList.remove("highlight");
                             }
@@ -272,15 +273,15 @@
                             let copyStr = '';
                             if (cellIndex < 2) {
                                 let key = (rowIndex - 1).toString();
-                                copyStr = '地狱寻宝 ' + xbData[key].boss;
-                                copyStr += ' ' + xbData[key].bz[0];
-                                copyStr += ' ' + xbData[key].bz[1];
+                                copyStr = '地狱寻宝 ' + xbData[key]?.boss ?? '';
+                                copyStr += ' ' + xbData[key]?.bz[0] ?? '';
+                                copyStr += ' ' + xbData[key]?.bz[1] ?? '';
                             }
                             else if (cellIndex >= 2) {
                                 let key = (rowIndex - 1).toString();
-                                copyStr = '地狱寻宝 ' + xbData[key].bz[0];
-                                copyStr += ' ' + xbData[key].bz[1];
-                                copyStr += ' ' + xbData[key].bz[2];
+                                copyStr = '地狱寻宝 ' + xbData[key]?.bz[0] ?? '';
+                                copyStr += ' ' + xbData[key]?.bz[1] ?? '';
+                                copyStr += ' ' + xbData[key]?.bz[2] ?? '';
                             }
 
                             // 将文本复制到剪贴板
@@ -293,8 +294,8 @@
                                     }).catch(err => {
                                         console.log(err);
                                     });
-                                } 
-                                
+                                }
+
                                 if (!copySuccess) {
                                     // 回退到 execCommand 方法
                                     const textarea = document.createElement('textarea');
